@@ -11,4 +11,7 @@
 
 using namespace std;
 
+//template <typename T>
+//void swap(T &a, T &b);
+
 #endif //LEETCODECPLUSPLUS_COMMON_H
