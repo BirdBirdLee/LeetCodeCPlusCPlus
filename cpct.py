@@ -26,14 +26,14 @@ class CPCT(object):
         file_data = file.read()
         file.close()
 
-        print(file_data)
-        print("类型：", type(file_data))
+        # print(file_data)
+        # print("类型：", type(file_data))
 
         # 将字符串转化为字典或列表
-        print("***转化yaml数据为字典或列表***")
+        # print("***转化yaml数据为字典或列表***")
         self.configs = yaml.load(file_data)
-        print(self.configs)
-        print("类型：", type(self.configs))
+        # print(self.configs)
+        # print("类型：", type(self.configs))
 
     def add_other2config(self):
         # 把题目号暂时加到配置里面，方便替换
@@ -71,6 +71,7 @@ class CPCT(object):
 
         with open(self.format_pid + ".h", "w", encoding="utf-8") as fw:
             fw.write(result_h)
+            print(self.format_pid + ".h" + "创建成功")
 
     def create_source_file(self):
         """
@@ -86,6 +87,7 @@ class CPCT(object):
 
         with open(self.format_pid + ".cpp", "w", encoding="utf-8") as fw:
             fw.write(result_cpp)
+            print(self.format_pid + ".cpp" + "创建成功")
 
     def create_class(self):
         self.get_format_pid()
