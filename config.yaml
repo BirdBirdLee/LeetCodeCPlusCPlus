@@ -1,1 +1,8 @@
+# 本配置文件中只要是布尔值，默认False是“否”，其余均为“是”
+# 作者
 author:  BirdBirdLee
+# 是否自动替换main.cpp中的题号为当前题号
+editMain: True
+# 项目是否使用CMake, 否填False
+# 如果是的话程序会在CMakeLists.txt中添加新生成的题目的.h和.cpp文件
+CMake: True

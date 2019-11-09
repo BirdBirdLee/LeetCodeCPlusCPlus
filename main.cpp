@@ -1,8 +1,8 @@
-#include "P0048.h"
+#include "P0058.h"
 
 int main() {
 //    std::cout << "Hello, World!" << std::endl;
-    Problem *p0048 = new P0048;
-    p0048->run();
+    Problem *p0058 = new P0058;
+    p0058->run();
     return 0;
 }

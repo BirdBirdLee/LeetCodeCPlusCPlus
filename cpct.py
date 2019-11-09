@@ -52,7 +52,7 @@ class CPCT(object):
     def replace_template_by_config(self, template):
         for key, value in self.configs.items():
             # print("$" + key, value)
-            template = template.replace("$" + key, value)
+            template = template.replace("$" + key, str(value))
 
         return template
 
@@ -66,12 +66,12 @@ class CPCT(object):
 
         result_h = self.replace_template_by_config(template_h)
         if os.path.exists(self.format_pid + ".h"):
-            print(self.format_pid + ".h" + "已存在，创建失败")
+            print("Failed to create " + self.format_pid + ".h" + ", detail" + self.format_pid + ".h already exists")
             return
 
         with open(self.format_pid + ".h", "w", encoding="utf-8") as fw:
             fw.write(result_h)
-            print(self.format_pid + ".h" + "创建成功")
+            print("Successfully created " + self.format_pid + ".h")
 
     def create_source_file(self):
         """
@@ -83,11 +83,48 @@ class CPCT(object):
 
         result_cpp = self.replace_template_by_config(template_cpp)
         if os.path.exists(self.format_pid + ".cpp"):
-            print(self.format_pid + ".cpp" + "已存在，创建失败")
+            print("Failed to create " + self.format_pid + ".cpp" + ", detail" + self.format_pid + ".cpp already exists")
+            return
 
         with open(self.format_pid + ".cpp", "w", encoding="utf-8") as fw:
             fw.write(result_cpp)
-            print(self.format_pid + ".cpp" + "创建成功")
+            print("Successfully created " + self.format_pid + ".cpp")
+
+    def edit_pid_in_main_cpp(self):
+        """
+        修改main.cpp中的题号
+        :return:
+        """
+        if self.configs['editMain'] == 'False':
+            return
+        with open("./main.cpp", "r", encoding="utf-8") as fr:
+            main_cpp_origin = fr.read()
+        main_cpp_dealt = re.sub(r'[0-9]{4}', '{:0>4d}'.format(self.pid), main_cpp_origin)
+        with open("./main.cpp", "w", encoding="utf-8") as fw:
+            fw.write(main_cpp_dealt)
+        print("Successfully edited " + "main.cpp")
+
+    def edit_CMake(self):
+        """
+        修改Cmake
+        :return:
+        """
+        CMake_filename = "CMakeLists.txt"
+        if self.configs['CMake'] == 'False':
+            return
+        with open(CMake_filename, "r", encoding="utf-8") as fr:
+            CMake_origin = fr.read()
+        # 清除原来Cmake中的.h和.cpp声明
+        CMake_dealt = CMake_origin.replace(self.format_pid + ".h", " ")
+        CMake_dealt = CMake_dealt.replace(self.format_pid + ".cpp", " ")
+        # 注意这里用正则实现更好
+        # 匹配 add_executable
+        # 在结尾加上.h和.cpp声明
+        CMake_dealt = CMake_dealt.strip()[:-1] + " " + self.format_pid + ".h " + self.format_pid + ".cpp)"
+        # print(CMake_dealt)
+        with open(CMake_filename, "w", encoding="utf-8") as fw:
+            fw.write(CMake_dealt)
+        print("Successfully edited " + CMake_filename)
 
     def create_class(self):
         self.get_format_pid()
@@ -95,15 +132,17 @@ class CPCT(object):
         self.add_other2config()
         self.create_header_file()
         self.create_source_file()
+        self.edit_pid_in_main_cpp()
+        self.edit_CMake()
 
 
 if __name__ == '__main__':
-    # 输出用中文是为了防止乱码
+    # 输出用英文是为了防止乱码
     # id = (int)(input("请输入题号，纯数字就行，不需要前面补0\n"))
     # 如果命令行参数大于1即传入了题号从命令行获取题目id
     if len(sys.argv) > 1:
         pid = (int)(sys.argv[1])
     else:
-        pid = (int)(input("请输入题号\n"))
+        pid = (int)(input("Please input problem id\n"))
     cpct = CPCT(pid)
     cpct.create_class()
